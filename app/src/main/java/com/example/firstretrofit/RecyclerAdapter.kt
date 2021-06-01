@@ -11,11 +11,10 @@ import com.example.firstretrofit.databinding.CountryLayoutBinding
 import com.example.firstretrofit.model.CountryModel
 
 class RecyclerAdapter(
-    private var countries: MutableList<CountryModel>,
-    private var click: (Int) -> Unit
+    private var click: (String) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
-
+    private var countries = mutableListOf<CountryModel>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
         var binding =
@@ -44,7 +43,7 @@ class RecyclerAdapter(
                 }?.drop(1)
 
             binding.ivFlag.setOnClickListener {
-                click(adapterPosition)
+                click(countries[adapterPosition].flag!!)
             }
 
             val imageLoader = ImageLoader.Builder(binding.ivFlag.context)
@@ -61,5 +60,15 @@ class RecyclerAdapter(
 
             imageLoader.enqueue(request)
         }
+    }
+
+    fun setCountries(items:List<CountryModel>){
+        countries.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    fun clearCountries(){
+        countries.clear()
+        notifyDataSetChanged()
     }
 }
