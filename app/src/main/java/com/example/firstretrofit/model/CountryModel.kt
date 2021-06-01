@@ -7,5 +7,5 @@ data class CountryModel(
     var subregion: String? = null,
     var nativeName:String? = null,
     var flag:String? = null,
-    var languages:List<Language>
+    var languages:List<Language>? = null
 )

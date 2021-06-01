@@ -6,14 +6,12 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.decode.SvgDecoder
-import coil.load
 import coil.request.ImageRequest
 import com.example.firstretrofit.databinding.CountryLayoutBinding
 import com.example.firstretrofit.model.CountryModel
 
 class RecyclerAdapter(
     private var countries: MutableList<CountryModel>,
-    private var mContext: Context,
     private var click: (Int) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerAdapter.MyViewHolder>() {
@@ -41,17 +39,21 @@ class RecyclerAdapter(
             binding.tvRegion.text = countries[adapterPosition].region
             binding.tvSubRegion.text = countries[adapterPosition].subregion
             binding.tvLanguage.text =
-                countries[adapterPosition].languages.fold("") { acc, language ->
+                countries[adapterPosition].languages?.fold("") { acc, language ->
                     "$acc, ${language.name}"
-                }.drop(1)
+                }?.drop(1)
 
-            val imageLoader = ImageLoader.Builder(mContext)
+            binding.ivFlag.setOnClickListener {
+                click(adapterPosition)
+            }
+
+            val imageLoader = ImageLoader.Builder(binding.ivFlag.context)
                 .componentRegistry {
-                    add(SvgDecoder(mContext))
+                    add(SvgDecoder(binding.ivFlag.context))
                 }
                 .build()
 
-            val request = ImageRequest.Builder(mContext)
+            val request = ImageRequest.Builder(binding.ivFlag.context)
                 .data(countries[adapterPosition].flag)
                 .crossfade(true)
                 .target(binding.ivFlag)
@@ -59,6 +61,5 @@ class RecyclerAdapter(
 
             imageLoader.enqueue(request)
         }
-
     }
 }
